@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ManagerDao">
+    <insert id="saveDept">
+        insert into depts(dName,dtime,duname,duid)
+        VALUES (#{dName},#{dtime},#{duname},#{duid})
+    </insert>
+    <delete id="delDeptByDid">
+        DELETE from depts where dId=#{dId}
+    </delete>
+    <update id="updateDept">
+        UPDATE depts set dName=#{dName} where dId=#{dId}
+    </update>
+    <insert id="saveJob">
+        insert into jobs(jName,jtime,juname,juid,dId)
+        VALUES (#{jName},#{jtime},#{juname},#{juid},#{dId})
+    </insert>
+    <delete id="delJobByJid">
+        DELETE from jobs where jId=#{jId}
+    </delete>
+    <update id="updateJob">
+        UPDATE jobs set jName=#{jName},did=#{did} where jId=#{jId}
+    </update>
+    <insert id="saveComputerTrainTable">
+        insert into computertraintable(context,ttime,dname,tbtype,needTime)VALUES (#{context},#{ttime},#{dname},#{tbtype},#{needTime})
+    </insert>
+    <update id="updateComputerTrainTable">
+        UPDATE computertraintable set
+        context=#{context},ttime=#{ttime},dname=#{dname},tbtype=#{tbtype},needTime=#{needTime} where ctid=#{ctid}
+    </update>
+    <delete id="delComputerTrainTable">
+        DELETE from computertraintable where  ctid=#{ctid}
+    </delete>
+    <select id="findAllComputerResumes" resultType="ComputerResumes">
+        SELECT *from computerresumes where cstype='未面试' or cstype='预约面试' or cstype='通知面试'
+    </select>
+    <delete id="delComputerResumesByCrid">
+        DELETE from computerresumes where crid=#{crid}
+    </delete>
+    <select id="findComputerResumesByCrid" resultType="ComputerResumes">
+        SELECT *from computerresumes where crid=#{crid}
+    </select>
+    <select id="findComputerResumesByRid" resultType="ComputerResumes">
+        SELECT *from computerresumes where rid=#{rid}
+    </select>
+    <update id="updateComputerResumesByCrid">
+        UPDATE computerresumes set crtype=#{crtype},cstype=#{cstype} where crid=#{crid}
+    </update>
+    <insert id="saveInterviewTable">
+         insert into
+         interviewTable
+         (time,uid,rid,tname,age,tel,dept,job,beforeJob,salary,gender,education,email,policitalStatus,workExperience,favorite,iinterviewtime,itype,iutype)
+         VALUES (#{sendTime},#{uid},#{rid},#{tname},#{age},#{tel},#{dept},#{job},#{beforeJob},
+         #{salary},#{gender},#{education},#{email},#{policitalStatus},
+         #{workExperience},#{favorite},#{time},'通知面试',0)
+    </insert>
+    <select id="findAllInterview" resultType="InterviewTable">
+        SELECT *from interviewTable
+    </select>
+    <select id="findInterviewByRid" resultType="InterviewTable">
+        SELECT *from interviewTable where  rid=#{rid}
+    </select>
+    <select id="findJobByJname" resultType="Job">
+        SELECT *FROM jobs where jName=#{jName} and dId=#{dId}
+    </select>
+    <select id="findAllComputerTrainTable" resultType="ComputerTrainTable">
+        SELECT *from ComputerTrainTable
+    </select>
+    <select id="findComputerTrainTableByCtid" resultType="ComputerTrainTable">
+        SELECT *from ComputerTrainTable where ctid=#{ctid}
+    </select>
+    <select id="findAllPublishment" resultType="Publishment">
+        SELECT *from publishment
+    </select>
+    <select id="findPubByPid" resultType="Publishment">
+        SELECT *from publishment where pid=#{pid}
+    </select>
+    <update id="editPubByPid">
+        UPDATE publishment set pcontext=#{pcontext},publishmentSalary=#{publishmentSalary} where pid=#{pid}
+    </update>
+    <delete id="delPubByPid">
+        DELETE from publishment where pid=#{pid}
+    </delete>
+</mapper>

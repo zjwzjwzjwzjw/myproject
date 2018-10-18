@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.EmploeeDao">
+    <insert id="saveEmploee">
+        insert into emploees
+        (uid,etype,ename,eage,eeducation,efavorite,eemail,etel,
+        edept,ejob,egender,epolicitalStatus,ebegintime)values(
+        #{uid},1,#{tname},#{age},#{education},#{favorite},#{email},#{tel},
+        #{dept},#{job},#{gender},#{policitalStatus},#{iinterviewtime}
+        )
+    </insert>
+    <update id="updateEmploee">
+        UPDATE emploees set etype=#{etype},ename=#{ename},eage=#{eage},eeducation=#{eeducation},
+        efavorite=#{efavorite},eemail=#{eemail},etel=#{etel},
+        edept=#{edept},ejob=#{ejob},egender=#{egender},epolicitalStatus=#{epolicitalStatus},
+        eaftertime=#{eaftertime},ereason=#{ereason} where uid=#{uid}
+    </update>
+    <select id="findEmpByUid" resultType="Emploee">
+        SELECT *from emploees where uid=#{id}
+    </select>
+    <select id="findEmpByDname" resultType="Emploee">
+        select *from emploees where edept=#{dname}
+    </select>
+    <select id="findEmpByDnameAndJName" resultType="Emploee">
+        select *from emploees where edept=#{dname}and ejob=#{jname}
+    </select>
+    <select id="findCheckWorkByUid" resultType="CheckWork">
+        SELECT *from checkworks where cid=#{id}
+    </select>
+    <insert id="saveCheckBeginTimeByUid">
+        insert into
+          checkworks(uid,cmonth,cbegintime,caftertime,cworkday,cyear,cdate,cwtype,cneedworkday)
+        values
+          (#{uid},#{cmonth},#{cbegintime},#{caftertime},#{cworkday},#{cyear},#{cdate},#{cwtype},#{cneedworkday})
+    </insert>
+    <update id="updateCheckAfterTimeByCid" parameterType="CheckWork">
+        UPDATE checkworks set caftertime=#{caftertime} , cwtype=#{cwtype} where cid=#{cid}
+    </update>
+    <select id="findCheckWorkByCdateAndUid" resultType="CheckWork">
+    select*from checkworks where uid=#{uid} and cdate=#{cdate} and cmonth=#{cmonth} and cyear=#{cyear}
+    </select>
+    <select id="findCheckWorkByCmonthAndUid" resultType="CheckWork">
+        select*from checkworks where uid=#{uid} and cmonth=#{cmonth} and cyear=#{cyear}
+    </select>
+    <insert id="savePublishment">
+        insert into publishment
+          (uid,publishmentSalary,pcontext,ptime)
+        values
+          (#{uid},#{publishmentSalary},#{pcontext},#{ptime})
+    </insert>
+    <select id="findPubByUid" resultType="Publishment">
+        SELECT *from publishment where uid=#{id}
+    </select>
+    <select id="findSalaryByUid" resultType="Salary">
+        SELECT *from salary where uid=#{id}
+    </select>
+    <select id="findTrainTableByUid" resultType="TrainTable">
+        SELECT *from traintable where uid=#{id}
+    </select>
+    <select id="findTrainTableByUidAndTid" resultType="TrainTable">
+        SELECT *from traintable where uid=#{id} and tid=#{tid}
+    </select>
+    <update id="updateTrainTableByTidAndUid" >
+        UPDATE traintable set ttype=#{ttype},trype=#{trype},tbtype=#{tbtype} where tid=#{tid} and uid=#{uid}
+    </update>
+    <select id="findChangeSalaryByUid" resultType="ChangeSalary">
+        SELECT *from changesalary where csuid=#{id}
+    </select>
+    <select id="findSalaryByUidAndYearAndMonth" resultType="Salary">
+        SELECT *from salary where uid=#{uid} and syear=#{year} and smonth=#{month}
+    </select>
+    <insert id="saveSalaryByUidAndYearAndMonth">
+        insert into salary
+        (uid,syear,smonth,baseSalary,overTimeSalary,performanceSalary)
+        VALUES (#{uid},#{year},#{month},0.0,0.0,0.0)
+    </insert>
+    <update id="updateSalaryBySid">
+        UPDATE salary set
+         baseSalary=#{baseSalary},overTimeSalary=#{overTimeSalary},performanceSalary=#{performanceSalary},
+         publishmentSalary=#{publishmentSalary},actualSalary=#{actualSalary} ,socical=#{socical}
+         where sid=#{sid}
+    </update>
+    <select id="findDeptByDId" resultType="Dept">
+        SELECT *from depts where dId=#{dId}
+    </select>
+    <select id="findJobByJid" resultType="Job">
+        SELECT *FROM jobs where jId=#{jId}
+    </select>
+    <select id="findAllEmp" resultType="Emploee">
+        SELECT *from emploees
+    </select>
+</mapper>
