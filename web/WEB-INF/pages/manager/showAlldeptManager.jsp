@@ -7,11 +7,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="base.jsp"%>
 <html>
 <head>
     <title>Title</title>
     <base href="http://localhost:8080/">
-    <script src="js/jquery-1.7.2.js"></script>
     <script>
         $(function(){
             $("#thirdTable").hide()
@@ -20,6 +20,11 @@
             $("#sixTable").hide()
             $("#sevenTable").hide()
             $(".dep").click(function(){
+                $("#thirdTable").hide()
+                $("#fourTable").hide()
+                $("#fiveTable").hide()
+                $("#sixTable").hide()
+                $("#sevenTable").hide()
                 var dept = $(this).text();//得到部门的名字
                 $("#secondTable").empty()
                 $("#secondTable").append("<h2>部门</h2>")
@@ -30,7 +35,7 @@
                     data:{"dName":dept},
                     success:function(data){
                         $.each(data,function(idx,item){
-                            $("#secondTable").append("<tr><td class='job'>"+item.jName+"</td><td class='delJob'>删除</td><td class='editJob'>修改</td></tr>")
+                            $("#secondTable").append("<tr><td>"+item.jName+"</td></td></tr>")
                         });
                     }
                 })
@@ -51,6 +56,7 @@
                 }
             })
             $("#addDept").click(function(){
+                $("#secondTable").hide()
                 $("#thirdTable").show()
                 $("#fourTable").hide()
                 $("#fiveTable").hide()
@@ -80,6 +86,7 @@
             var deptname=""
             $(".editDept").click(function(){
                 deptname=$(this).parent().children()[0].innerHTML
+                $("#secondTable").hide()
                 $("#fourTable").show()
                 $("#thirdTable").hide()
                 $("#fiveTable").hide()
@@ -106,6 +113,7 @@
                 $("#fourTable").hide()
             })
             $("#operatorJob").click(function(){
+                $("#secondTable").hide()
                 $("#fiveTable").show()
                 $("#fourTable").hide()
                 $("#thirdTable").hide()
@@ -131,6 +139,7 @@
             var jId
             $(".editJob").click(function(){
                 jId=$(this).parent().children()[0].innerHTML
+                $("#secondTable").hide()
                 $("#sixTable").show()
                 $("#fourTable").hide()
                 $("#thirdTable").hide()
@@ -157,6 +166,7 @@
                 $("#sixTable").hide()
             })
             $("#addJob").click(function(){
+                $("#secondTable").hide()
                 $("#sevenTable").show()
                 $("#fourTable").hide()
                 $("#thirdTable").hide()
@@ -199,10 +209,7 @@
             <td colspan="3" id="addDept">新增部门</td>
         </tr>
         <tr>
-            <td colspan="3" id="operatorJob">职位操作</td>
-        </tr>
-        <tr>
-            <td colspan="3"><a href="/login?accName=${sessionScope.user.accName}&password=${sessionScope.user.password}" style="text-underline: none">返回</a></td>
+            <td colspan="3" id="operatorJob"><button>职位操作</button></td>
         </tr>
     </table>
     <table id="secondTable">

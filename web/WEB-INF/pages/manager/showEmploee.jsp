@@ -7,11 +7,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="base.jsp"%>
 <html>
 <head>
     <title>Title</title>
     <base href="http://localhost:8080/">
-    <script src="js/jquery-1.7.2.js"></script>
     <script>
         $(function(){
             $(".del").click(function(){
@@ -28,30 +28,46 @@
                 }
                 return false;
             })
+            $(".salary").click(function(){
+                var uid=$(this).parent().parent().children()[0].innerHTML
+                $.post("/man/paySalary",{"uid":uid},function(data){
+                    if(data=="1"){
+                        alert("请于20号之后发放")
+                    }
+                    if(data=="2"){
+                        alert("上月没有薪资")
+                    }
+                    if(data=="ok"){
+                        alert("发放成功")
+                    }
+                    if(data=="no"){
+                        alert("不能重复发放")
+                    }
+                })
+                return false;
+            })
         })
     </script>
 </head>
 <body>
-<table border="2px" cellspacing="0">
-    <tr>
-        <td>编号</td>
-        <td>姓名</td>
-        <td colspan="4">操作</td>
-    </tr>
-    <c:forEach items="${requestScope.emploees}" var="emp">
-        <c:if test="${emp.etype==1}">
-            <tr>
-                <td>${emp.uid}</td>
-                <td><a href="/man/showDetailEmploee?uid=${emp.uid}">${emp.ename}</a></td>
-                <td><a href="/man/adjustEmploee?uid=${emp.uid}">人事调动</a></td>
-                <td><a href="#" class="checkwork">考勤</a></td>
-                <td><a href="#" class="salary">发放工资</a></td>
-                <td><a href="#" class="del">开除</a></td>
-            </tr>
-        </c:if>
-    </c:forEach>
-</table>
-
-<a href="/login?accName=${sessionScope.user.accName}&password=${sessionScope.user.password}" style="text-underline: none">返回</a>
+    <table border="2px" cellspacing="0">
+        <tr>
+            <td>编号</td>
+            <td>姓名</td>
+            <td colspan="4">操作</td>
+        </tr>
+        <c:forEach items="${requestScope.emploees}" var="emp">
+            <c:if test="${emp.etype==1}">
+                <tr>
+                    <td>${emp.uid}</td>
+                    <td><a href="/man/showDetailEmploee?uid=${emp.uid}">${emp.ename}</a></td>
+                    <td><a href="/man/adjustEmploee?uid=${emp.uid}">人事调动</a></td>
+                    <td><a href="/emp/showcheckwork?uid=${emp.uid}" class="checkwork">考勤</a></td>
+                    <td><a href="#" class="salary">发放工资</a></td>
+                    <td><a href="#" class="del">开除</a></td>
+                </tr>
+            </c:if>
+        </c:forEach>
+    </table>
 </body>
 </html>

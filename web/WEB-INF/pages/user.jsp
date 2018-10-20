@@ -11,7 +11,11 @@
 <head>
     <title>Title</title>
     <base href="http://localhost:8080/">
-    <script src="js/jquery-1.7.2.js"></script>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap-table/dist/bootstrap-table.min.css">
+    <script src="../js/jquery-1.10.2.min%20(1).js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script>
         $(function() {
             var id = $("#id").val()
@@ -131,13 +135,17 @@
                         alert("正常下班,缺少上班卡")
                     }
                     if(data=="3"){
-                        alert("早退,扣20元")
+                        alert("旷工,扣50")
                     }
                     if(data=="4"){
                         alert("正常下班")
                     }
+                    if(data=="6"){
+                        alert("旷工,并缺少上班卡")
+                    }
                 })
                 $("#endwork").attr("disabled",true);
+                $("#toworking").attr("disabled",true);
             })
             $("#salary").click(function(){
                 var args={"uid":id}
@@ -169,15 +177,16 @@
 <body>
 <input type="hidden" id="id" value="${sessionScope.user.id}">
 <input type="hidden" id="utype" value="${sessionScope.user.utype}">
+<div style="width: 100%;height: 30px;color: red;background-color: #00CC00">当前用户：${sessionScope.user.accName}</div>
 <c:if test="${sessionScope.user.utype==2}">
-    <a id="message" href="#">消息提醒</a>
-    <a href="/showResume?id=${sessionScope.user.id}">查看简历</a>
-    <a href="/editAccount">修改账户信息</a>
-    <a href="/main.jsp" id="exit">退出</a>
+        <a id="message" href="#">消息提醒</a>
+        <a href="/showResume?id=${sessionScope.user.id}">查看简历</a>
+        <a href="/editAccount">修改账户信息</a>
+        <a href="/main.jsp" id="exit">退出</a>
 </c:if>
 <c:if test="${sessionScope.user.utype==1}">
     <a href="/emp/showEmp?id=${sessionScope.user.id}">基本信息</a>
-    <a href="">我的考勤</a>
+    <a href="/emp/showcheckwork">我的考勤</a>
     <a  id="pub" href="#">我的奖惩</a>
     <a href="/emp/showAllDept">部门职位</a>
     <a href="#" id="salary">我的薪资</a>
@@ -188,13 +197,19 @@
     <button id="endwork">下班打卡</button>
 </c:if>
 <c:if test="${sessionScope.user.utype==0}">
-    <a href="/man/showComputerResumes">应聘管理</a>
-    <a href="/man/showAllDeptAndJob">部门职位</a>
-    <a href="/man/showTrainTable">培训管理</a>
-    <a href="/man/showEmploee">员工管理</a>
-    <a href="/man/showpublishment">奖惩管理</a>
-    <a href="">薪资管理</a>
-    <a href="/main.jsp" id="exit">退出</a>
+    <nav class="navbar navbar-default" style="background-image: url(/image/3.jpg)">
+        <div class="container-fluid" style="background-color: #00CCFF">
+            <ul class="nav navbar-nav">
+                <li><a href="/man/showComputerResumes">应聘管理</a></li>
+                <li><a href="/man/showAllDeptAndJob">部门职位</a></li>
+                <li><a href="/man/showTrainTable">培训管理</a></li>
+                <li><a href="/man/showEmploee">员工管理</a></li>
+                <li><a href="/man/showpublishment">奖惩管理</a></li>
+                <li><a href="">薪资管理</a></li>
+                <li><a href="/main.jsp" id="exit">退出</a></li>
+            </ul>
+        </div>
+    </nav>
 </c:if>
 </body>
 </html>

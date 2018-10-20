@@ -25,6 +25,7 @@ public interface ManagerService {
     void saveInterviewTable(ComputerResumes computerResumes);
     List<InterviewTable> findAllInterview();
     List<Publishment> findAllPublishment();
+    List<Publishment> findPublishmentByUid(Integer uid);
     InterviewTable findInterviewByRid(Integer rid);
     Job findJobByJname(String jName, Integer dId);
     List<ComputerTrainTable> findAllComputerTrainTable();

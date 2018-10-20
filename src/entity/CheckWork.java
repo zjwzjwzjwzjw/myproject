@@ -15,7 +15,7 @@ public class CheckWork {
     private String caftertime;//下班打卡时间
     private Integer cworkday;//已工作多少天
     private Integer cneedworkday;//需工作多少天
-    private String cwtype;//上班状态 迟到 旷工 早退 迟到和早退 缺勤
+    private String cwtype;//上班状态 迟到 旷工 早退  缺勤
     public CheckWork() {
     }
 

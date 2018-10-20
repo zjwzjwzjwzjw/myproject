@@ -7,11 +7,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="base.jsp"%>
 <html>
 <head>
     <title>Title</title>
     <base href="http://localhost:8080/">
-    <script src="js/jquery-1.7.2.js"></script>
     <script>
         $(function(){
            $("form").submit(function(){
@@ -53,11 +53,12 @@
     <input type="hidden" id="uid" value="${requestScope.emploee.uid}">
     <table border="2px" cellspacing="0">
         <tr>
-            <td colspan="2">姓名</td>
-            <td colspan="2" id="name">${requestScope.emploee.ename}</td>
+            <td>姓名</td>
+            <td>部门</td>
+            <td>职位</td>
         </tr>
         <tr>
-            <td>部门</td>
+            <td id="name">${requestScope.emploee.ename}</td>
             <td>
                 <select  id="dept">
                     <c:forEach items="${requestScope.depts}" var="dept">
@@ -69,18 +70,25 @@
                         </c:if>
                     </c:forEach>
                 </select>
-            <td>职位</td>
             <td>
                 <select id="job">
+                    <c:forEach items="${requestScope.jobs}" var="job">
+                        <c:if test="${requestScope.emploee.ejob==job.jName}">
+                            <option selected="selected">${requestScope.emploee.ejob}</option>
+                        </c:if>
+                        <c:if test="${requestScope.emploee.ejob!=job.jName}">
+                            <option>${job.jName}</option>
+                        </c:if>
+                    </c:forEach>
                     <option>${requestScope.emploee.ejob}</option>
                 </select>
             </td>
         </tr>
         <tr>
-            <td><input type="submit" value="确认调动"> </td>
+            <td colspan="2"><input type="submit" value="确认调动"></td>
+            <td colspan="2"><a href="/man/showEmploee">返回</a></td>
         </tr>
     </table>
 </form>
-<a href="/login?accName=${sessionScope.user.accName}&password=${sessionScope.user.password}" style="text-underline: none">返回</a>
 </body>
 </html>

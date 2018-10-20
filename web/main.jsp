@@ -11,6 +11,11 @@
     <title>$Title$</title>
     <base href="http://localhost:8080/">
     <style>
+      .a{
+        background-image: url("image/1.png");
+        background-size:100%;
+        background-repeat: no-repeat;
+      }
     </style>
     <script src="js/jquery-1.7.2.js"></script>
     <script>
@@ -51,15 +56,15 @@
       })
     </script>
   </head>
-  <body>
-    <form>
+  <body class="a">
+    <form style="text-align: center;margin-top: 20%">
       <h1>登录</h1>
       账户名<input type="text" name="accName"><br>
       <span id="checkName" style="color: red"></span><br>
-      密码:<input type="text" name="password">
+      密&nbsp;&nbsp;码:<input type="text" name="password"><br>
       <span style="color: red" id="alarm"></span><br>
-      <input type="submit" value="登录">
-      <input type="reset" value="取消">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="登录">
+      &nbsp;&nbsp;<input type="reset" value="取消"><br>
       快来加入我们吧!
       <a href="/add">注册</a>
     </form>

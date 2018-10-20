@@ -15,7 +15,7 @@ public class MyUtil {
         int day=c.getActualMaximum(Calendar.DAY_OF_MONTH);
         for(int i=1;i<=day;i++){
             c.set(year,month,i);
-            if(c.get(c.DAY_OF_WEEK)==1||c.get(c.DAY_OF_WEEK)==7){
+            if(c.get(c.DAY_OF_WEEK)!=1||c.get(c.DAY_OF_WEEK)!=7){
                 count++;
             }
         }

@@ -81,4 +81,7 @@
     <delete id="delPubByPid">
         DELETE from publishment where pid=#{pid}
     </delete>
+    <select id="findPublishmentByUid" resultType="Publishment">
+        SELECT *from publishment where uid=#{uid}
+    </select>
 </mapper>

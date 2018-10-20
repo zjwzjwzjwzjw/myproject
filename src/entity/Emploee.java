@@ -144,4 +144,25 @@ public class Emploee {
     public void setEreason(String ereason) {
         this.ereason = ereason;
     }
+
+    @Override
+    public String toString() {
+        return "Emploee{" +
+                "uid=" + uid +
+                ", etype=" + etype +
+                ", ename='" + ename + '\'' +
+                ", egender='" + egender + '\'' +
+                ", eage=" + eage +
+                ", eeducation='" + eeducation + '\'' +
+                ", efavorite='" + efavorite + '\'' +
+                ", eemail='" + eemail + '\'' +
+                ", etel=" + etel +
+                ", edept='" + edept + '\'' +
+                ", ejob='" + ejob + '\'' +
+                ", epolicitalStatus='" + epolicitalStatus + '\'' +
+                ", ebegintime=" + ebegintime +
+                ", eaftertime=" + eaftertime +
+                ", ereason='" + ereason + '\'' +
+                '}';
+    }
 }

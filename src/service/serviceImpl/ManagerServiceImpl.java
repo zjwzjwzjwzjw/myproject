@@ -101,6 +101,11 @@ public class ManagerServiceImpl extends EmploeeServiceImpl implements ManagerSer
     }
 
     @Override
+    public List<Publishment> findPublishmentByUid(Integer uid) {
+        return managerDao.findPublishmentByUid(uid);
+    }
+
+    @Override
     public InterviewTable findInterviewByRid(Integer rid) {
         return managerDao.findInterviewByRid(rid);
     }

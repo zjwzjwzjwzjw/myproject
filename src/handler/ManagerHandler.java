@@ -327,14 +327,18 @@ public class ManagerHandler {
         emploee.setEaftertime(new Date());
         emploee.setEreason(reason);
         emploee.setEtype(0);
+        User  user=managerService.findUserById(uid);
+        user.setUtype(2);
+        managerService.updateUser(user);
         managerService.updateEmploee(emploee);
         return "";
     }
     @RequestMapping("adjustEmploee")
     private String adjustEmploee(Integer uid,Model model){
         Emploee emploee=managerService.findEmpByUid(uid);
+        Dept dept=managerService.findByName(emploee.getEdept());
         List<Dept> depts=managerService.findAllDept();
-        List<Job>jobs=managerService.findAllJob();
+        List<Job>jobs=managerService.findJobByDId(dept.getdId());
         model.addAttribute("depts",depts);
         model.addAttribute("jobs",jobs);
         model.addAttribute("emploee",emploee);
@@ -369,6 +373,56 @@ public class ManagerHandler {
         publishment.setPublishmentSalary(publishmentSalary);
         managerService.editPubByPid(publishment);
         return "";
+    }
+    @RequestMapping("paySalary")
+    @ResponseBody
+    private String editpublishment(Integer uid){
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH)+1;
+        int date = c.get(Calendar.DATE);
+        if(date<20){
+            return "1";//请于20号后发放工资
+        }
+        int yearA=0;
+        int monthA=0;
+        if(month==1){
+            yearA=year-1;
+            monthA=12;
+        }else{
+            yearA=year;
+            monthA=month-1;
+        }
+        Salary salary=managerService.findSalaryByUidAndYearAndMonth(uid,yearA,monthA);
+        if(salary==null){
+            return "2";//不存在上月薪资
+        }else{
+            if(salary.getActualSalary()==null) {//工资还未发放
+                String time = "";//上一个月的年月日
+                if (month == 1) {
+                    time = year - 1 + "-12-00";//
+                } else {
+                    time = year + "-" + (month - 1) + "-00";//
+                }
+                String time1 = year + "-" + month + "-00";//本月
+                List<Publishment> publishments = managerService.findPublishmentByUid(uid);
+                Double pubSalary = 0.0;
+                if (publishments.size() != 0) {
+                    for (Publishment p : publishments) {
+                        String time2 = new SimpleDateFormat("yyyy-MM-dd").format(p.getPtime());
+                        if (time2.compareTo(time1) < 0 && time2.compareTo(time) > 0) {
+                            pubSalary += p.getPublishmentSalary();
+                        }
+                    }
+                }
+                salary.setPublishmentSalary(pubSalary);
+                salary.setActualSalary(salary.getBaseSalary()+salary.getOverTimeSalary()+salary.getPerformanceSalary()+pubSalary+salary.getSocical());
+                managerService.updateSalaryBySid(salary);
+                return "ok";//工资已发放
+            }else{
+                return "no";//不能重复发放
+            }
+        }
     }
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request){

@@ -28,6 +28,7 @@ public interface ManagerDao extends EmploeeDao{
     void saveInterviewTable(ComputerResumes computerResumes);//保存面试信息
     List<InterviewTable> findAllInterview();
     List<Publishment> findAllPublishment();
+    List<Publishment> findPublishmentByUid(Integer uid);
     Publishment findPubByPid(Integer pid);
     void delPubByPid(Integer pid);
     void editPubByPid(Publishment publishment);

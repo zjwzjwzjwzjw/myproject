@@ -71,8 +71,8 @@
     </select>
     <insert id="saveSalaryByUidAndYearAndMonth">
         insert into salary
-        (uid,syear,smonth,baseSalary,overTimeSalary,performanceSalary)
-        VALUES (#{uid},#{year},#{month},0.0,0.0,0.0)
+        (uid,syear,smonth,baseSalary,overTimeSalary,performanceSalary,publishmentSalary,socical)
+        VALUES (#{uid},#{year},#{month},0.0,0.0,0.0,0.0,0.0)
     </insert>
     <update id="updateSalaryBySid">
         UPDATE salary set

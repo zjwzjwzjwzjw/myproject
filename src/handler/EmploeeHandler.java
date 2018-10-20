@@ -97,6 +97,12 @@ public class EmploeeHandler {
         List<Emploee> list=emploeeService.findEmpByDname(dName);
         return JSON.toJSONString(list);
     }
+    @RequestMapping(value="findEmpByDeptAndJob",produces={"text/html;charset=UTF-8"})
+    @ResponseBody
+    private String findEmpByDeptAndJob(String dept,String job){
+        List<Emploee> list=emploeeService.findEmpByDnameAndJName(dept,job);
+        return JSON.toJSONString(list);
+    }
     @RequestMapping("toworking")
     @ResponseBody
     private String toworking(Integer uid,CheckWork checkWork,Publishment publishment,String diff){
@@ -117,7 +123,6 @@ public class EmploeeHandler {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
                 int second = c.get(Calendar.SECOND);
-                Salary salary=emploeeService.findSalaryByUidAndYearAndMonth(uid,year,month);//查找到此员工本月的薪水记录
                 checkWork.setUid(uid);
                 checkWork.setCyear(year);
                 checkWork.setCmonth(month);
@@ -135,8 +140,6 @@ public class EmploeeHandler {
                     }
                     checkWork.setCworkday(count+1);//打卡次数加1
                 }
-                salary.setBaseSalary(salary.getBaseSalary()+100);//基本工资加100
-                emploeeService.updateSalaryBySid(salary);
                 if (hour >= 11) {
                     checkWork.setCwtype("旷工");
                     publishment.setUid(uid);
@@ -144,6 +147,7 @@ public class EmploeeHandler {
                     publishment.setPtime(new Date());
                     publishment.setPublishmentSalary(-50.0);
                     emploeeService.savePublishment(publishment);
+                    emploeeService.saveCheckBeginTimeByUid(checkWork);
                     return "1";
                 }else if (hour >= 9) {
                     checkWork.setCwtype("迟到");
@@ -152,12 +156,11 @@ public class EmploeeHandler {
                     publishment.setPtime(new Date());
                     publishment.setPublishmentSalary(-20.0);
                     emploeeService.savePublishment(publishment);
+                    emploeeService.saveCheckBeginTimeByUid(checkWork);
                     return "2";
                 }else {
                     checkWork.setCwtype("正常");
-
                 }
-                emploeeService.saveCheckBeginTimeByUid(checkWork);
                 return "3";
             }else{
                 return "";//
@@ -191,20 +194,20 @@ public class EmploeeHandler {
         if(diff!=null) {//区别未点击事件
             publishment.setUid(uid);
             publishment.setPtime(new Date());
-            if (hour < 18) {//是否早退
+            if(hour<15){
+                publishment.setPcontext("旷工");
+                publishment.setPublishmentSalary(-50.0);
+            }else if (hour < 18) {//是否早退
                 publishment.setPcontext("早退");
                 publishment.setPublishmentSalary(-20.0);
-                emploeeService.savePublishment(publishment);
             }
             if(hour>19){
-                publishment.setPcontext("加班");
-                publishment.setPublishmentSalary((hour-18)*20.0);//加班每小时20元
-                emploeeService.savePublishment(publishment);
+               salary1.setOverTimeSalary(salary1.getOverTimeSalary()+(hour-18)*20.0);//加班每小时20元
             }
+            emploeeService.savePublishment(publishment);
         }
         if(checkWork1==null){//今日上班未打卡
             if(diff!=null) {//区别未点击事件
-                salary1.setBaseSalary(salary1.getBaseSalary()+100);//基本工资加100
                 List<CheckWork> list = emploeeService.findCheckWorkByCmonthAndUid(year, month, uid);//获得此员工本月的打卡记录
                 checkWork.setUid(uid);
                 checkWork.setCyear(year);
@@ -223,12 +226,20 @@ public class EmploeeHandler {
                     }
                     checkWork.setCworkday(count+1);//打卡次数加1
                 }
-                if (hour < 18) {//是否早退
+                if(hour<15){
+                    checkWork.setCwtype("旷工,缺少上班卡");
+                    emploeeService.saveCheckBeginTimeByUid(checkWork);
+                    return "6";//旷工
+                }else if (hour < 18) {//是否早退
+                    salary1.setBaseSalary(salary1.getBaseSalary()+50);//基本工资加50
                     checkWork.setCwtype("早退,缺少上班卡");
+                    emploeeService.updateSalaryBySid(salary1);
                     emploeeService.saveCheckBeginTimeByUid(checkWork);
                     return "1";//早退 上班未打卡
                 } else {
+                    salary1.setBaseSalary(salary1.getBaseSalary()+80);//基本工资加80
                     checkWork.setCwtype("正常下班,缺少上班卡");
+                    emploeeService.updateSalaryBySid(salary1);
                     emploeeService.saveCheckBeginTimeByUid(checkWork);
                     return "2";//正常下班 上班未打卡
                 }
@@ -242,55 +253,39 @@ public class EmploeeHandler {
                     if(hour>16){//5-6点下班
                         if(checkWork1.getCwtype().equals("迟到")){
                             salary1.setPerformanceSalary(salary1.getPerformanceSalary()+80);
-                        }else if(checkWork1.getCwtype().equals("旷工")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+50);
-                        }else{
+                        }
+                        if(checkWork1.getCwtype().equals("正常上班")){
                             salary1.setPerformanceSalary(salary1.getPerformanceSalary()+100);
                         }
                     }else if(hour>15){//4-5点下班
                         if(checkWork1.getCwtype().equals("迟到")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+80);
-                        }else if(checkWork1.getCwtype().equals("旷工")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+40);
-                        }else{
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+90);
+                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+70);
                         }
-
+                        if(checkWork1.getCwtype().equals("正常上班")) {
+                            salary1.setPerformanceSalary(salary1.getPerformanceSalary() + 60);
+                        }
                     }else if(hour>14){//3-4点下班
                         if(checkWork1.getCwtype().equals("迟到")){
                             salary1.setPerformanceSalary(salary1.getPerformanceSalary()+60);
-                        }else if(checkWork1.getCwtype().equals("旷工")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+30);
-                        }else{
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+70);
                         }
-
-                    }else if(hour>13){//2-3点下班
-                        if(checkWork1.getCwtype().equals("迟到")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+50);
-                        }else{
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+60);
-                        }
-
-                    }else{//1-2点下班
-                        if(checkWork1.getCwtype().equals("迟到")){
-                            salary1.setPerformanceSalary(salary1.getPerformanceSalary()+40);
-                        }else{
+                        if(checkWork1.getCwtype().equals("正常上班")){
                             salary1.setPerformanceSalary(salary1.getPerformanceSalary()+50);
                         }
-
+                    }else{//3点以前下班
+                        checkWork1.setCwtype("旷工");
                     }
-                    checkWork1.setCwtype("早退");
+                    if(!(checkWork1.getCwtype().equals("旷工"))){
+                        salary1.setBaseSalary(salary1.getBaseSalary()+100);//基本工资
+                    }
                     emploeeService.updateSalaryBySid(salary1);
                     emploeeService.updateCheckAfterTimeByCid(checkWork1);
                     return "3";//早退
                 } else {
-                    checkWork1.setCwtype("正常下班");
+                    salary1.setBaseSalary(salary1.getBaseSalary()+100);//基本工资
                     if(checkWork1.getCwtype().equals("迟到")){
                         salary1.setPerformanceSalary(salary1.getPerformanceSalary()+100);
-                    }else if(checkWork1.getCwtype().equals("旷工")){
-                        salary1.setPerformanceSalary(salary1.getPerformanceSalary()+60);
-                    }else{
+                    }
+                    if(checkWork1.getCwtype().equals("正常下班")){
                         salary1.setPerformanceSalary(salary1.getPerformanceSalary()+120);
                     }
                     emploeeService.updateSalaryBySid(salary1);
@@ -389,9 +384,6 @@ public class EmploeeHandler {
                 int nowmonth = c.get(Calendar.MONTH)+1;
                 int nowdate = c.get(Calendar.DATE);
                 String time=new SimpleDateFormat("yyyy-MM-dd").format(list.get(i).getTtime());
-                String year=time.substring(0,4);
-                String month=time.substring(5,7);
-                String date=time.substring(8,10);
                 int day=list.get(i).getNeedTime();//培训时长
                 String time1=nowyear+""+nowmonth+(nowdate-day);
                 if(time1.compareTo(time)>0){//培训已结束
@@ -422,6 +414,12 @@ public class EmploeeHandler {
         trainTable.setTtype(1);//报名参加
         emploeeService.updateTrainTableByTidAndUid(trainTable);
         return "";
+    }
+    @RequestMapping("showcheckwork")
+    private String showcheckwork(Integer  uid,Model model){
+       List<CheckWork> list=emploeeService.findCheckWorkByUid(uid);
+        model.addAttribute("checkworks",list);
+        return "emploee/showCheckWork";
     }
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request){
